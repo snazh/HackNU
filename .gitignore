@@ -1,0 +1,84 @@
+# -------------------------
+# General
+# -------------------------
+__pycache__/
+*.py[cod]
+*.log
+*.env
+*.venv
+.env
+venv/
+.venv/
+*.sqlite3
+.DS_Store
+
+# -------------------------
+# Python / Poetry
+# -------------------------
+poetry.lock
+.mypy_cache/
+.pytest_cache/
+.cache/
+.idea/
+.vscode/
+*.egg-info/
+dist/
+build/
+
+# Ignore local poetry environments
+# (if not using virtualenvs.in-project = true)
+*/.venv/
+
+# -------------------------
+# FastAPI / Backend
+# -------------------------
+backend/__pycache__/
+backend/*.db
+backend/.env
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.coverage
+backend/htmlcov/
+backend/logs/
+
+# -------------------------
+# Node / Frontend
+# -------------------------
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.local
+frontend/.DS_Store
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/package-lock.json
+
+# -------------------------
+# Docker / System
+# -------------------------
+*.pid
+*.tar
+*.bak
+*.tmp
+*.swp
+*.orig
+*~
+
+# Docker volumes or build files
+volumes/
+docker-compose.override.yml
+
+# -------------------------
+# VS Code / JetBrains
+# -------------------------
+.vscode/
+.idea/
+
+# -------------------------
+# OS-specific
+# -------------------------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
