@@ -1,13 +1,11 @@
-from pathlib import Path
+
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
-
 # declaring path to .env file
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 ENV_PATH = os.path.join(ROOT_DIR, '.env')
 
-TMP_S3_STORAGE_PATH = os.path.join(ROOT_DIR, 'tmp_s3_storage')
 
 
 class CoreConfig(BaseSettings):
@@ -42,13 +40,6 @@ class AdminSettings(CoreConfig):
     ADMIN_PASSWORD: str
 
 
-class S3BucketSettings(CoreConfig):
-    AWS_BUCKET_NAME: str
-    AWS_REGION: str
-    AWS_ACCESS_KEY: str
-    AWS_SECRET_KEY: str
-    media_storage: Path = TMP_S3_STORAGE_PATH
-
 
 class ExternalApiSettings(CoreConfig):
     OPENAI_API_KEY: str
@@ -63,7 +54,6 @@ class Settings(CoreConfig):
     db: DBSettings = DBSettings()
     auth: AuthSettings = AuthSettings()
     admin_data: AdminSettings = AdminSettings()
-    s3bucket: S3BucketSettings = S3BucketSettings()
     redis: RedisSetting = RedisSetting()
     external_api: ExternalApiSettings = ExternalApiSettings()
 
