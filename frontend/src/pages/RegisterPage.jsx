@@ -1,9 +1,9 @@
-// RegisterPage.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function RegisterPage() {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,7 +14,7 @@ function RegisterPage() {
     e.preventDefault();
     setError("");
 
-    if (!name || !email || !password) {
+    if (!firstName || !lastName || !email || !password) {
       setError("Пожалуйста, заполните все поля");
       return;
     }
@@ -22,18 +22,23 @@ function RegisterPage() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/register", {
+      const response = await fetch("http://localhost:8000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          password
+        }),
       });
 
       const data = await response.json();
 
-      if (data.status === "ok") {
+      if (response.ok) {
         navigate("/"); // редирект на логин
       } else {
-        setError(data.message || "Ошибка регистрации");
+        setError(data.detail || "Ошибка регистрации");
       }
     } catch (err) {
       setError("Ошибка соединения с сервером");
@@ -51,8 +56,17 @@ function RegisterPage() {
           <input
             type="text"
             placeholder="Имя"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="w-full py-3 px-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 placeholder-gray-400 transition"
+            required
+          />
+
+          <input
+            type="text"
+            placeholder="Фамилия"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             className="w-full py-3 px-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 placeholder-gray-400 transition"
             required
           />
@@ -102,4 +116,4 @@ function RegisterPage() {
   );
 }
 
-export default RegisterPage
+export default RegisterPage;

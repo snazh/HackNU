@@ -11,27 +11,36 @@ function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+
     if (!email || !password) {
       setError("Пожалуйста, заполните все поля");
       return;
     }
+
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/login", {
+      const response = await fetch("http://localhost:8000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+          const data = await response.json();
 
-      const data = await response.json();
+        alert(JSON.stringify(data, null, 2));
 
-      if (data.status === "ok") {
-        localStorage.setItem("token", data.token); // если сервер присылает токен
-        if (data.user.role === "user") navigate("/user");
-        else if (data.user.role === "hr") navigate("/hr");
+
+
+
+      if (response.ok) {
+        localStorage.setItem("token", data.access_token); // если бекенд FastAPI возвращает access_token
+        const role = data.user.role;
+
+        if (role === "user") navigate("/user");
+        else if (role === "hr") navigate("/hr");
+        else navigate("/"); // по умолчанию
       } else {
-        setError("Неверный логин или пароль");
+        setError(data.detail || "Неверный логин или пароль");
       }
     } catch (err) {
       setError("Ошибка соединения с сервером");
@@ -77,18 +86,18 @@ function LoginPage() {
           </button>
 
           <p className="text-center text-gray-500 text-sm mt-2">
-    Нет аккаунта?{" "}
-    <span
-      onClick={() => navigate("/register")}
-      className="text-gray-800 font-medium hover:underline cursor-pointer"
-    >
-      Зарегистрируйтесь
-    </span>
-  </p>
+            Нет аккаунта?{" "}
+            <span
+              onClick={() => navigate("/register")}
+              className="text-gray-800 font-medium hover:underline cursor-pointer"
+            >
+              Зарегистрируйтесь
+            </span>
+          </p>
         </form>
       </div>
     </div>
   );
 }
 
-export default LoginPage
+export default LoginPage;
