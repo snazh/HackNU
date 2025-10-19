@@ -67,7 +67,26 @@ class BaseService[ModelType, SchemaType]:
         if result.rowcount == 0:
             raise ItemNotFoundError(item="", attr="id", value=item_id)
         return True
+    async def partial_update(
+        self, item_id: int, item_update_data: BaseModel, session: AsyncSession
+    ) -> bool:
+        # Получаем только переданные поля (не None)
+        update_data = {k: v for k, v in item_update_data.model_dump(exclude_unset=True).items()}
+        if not update_data:
+            return False  # Нечего обновлять
 
+        stmt = (
+            update(self.model)
+            .where(self.model.id == item_id)
+            .values(**update_data)
+            .execution_options(synchronize_session="fetch")
+        )
+        result = await session.execute(stmt)
+        await session.commit()
+
+        if result.rowcount == 0:
+            raise ItemNotFoundError(item=self.model.__tablename__, attr="id", value=item_id)
+        return True
     async def delete(self, session: AsyncSession, item_id: int) -> bool:
         stmt = (
             delete(self.model)
