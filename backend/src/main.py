@@ -32,11 +32,6 @@ app.add_middleware(
 )
 
 
-@app.get("/")
-def root():
-    return {"message": "FastAPI is running!"}
-
-
 @app.exception_handler(BaseAppException)
 async def base_app_exception_handler(request: Request, exc: BaseAppException) -> Union[JSONResponse, Response]:
     return JSONResponse(

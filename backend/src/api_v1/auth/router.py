@@ -44,7 +44,8 @@ async def login(user_data: LoginSchema,
         samesite="lax",
         max_age=60 * settings.auth.REFRESH_TOKEN_EXPIRES_MINUTES,  # 7 days
     )
-    return {"status": "Success", "msg": "Logged in", "data": {"token": tokens.access}}
+    user = await service.get_one_by(field="email", value=user_data.email, session=session)
+    return {"status": "Success", "msg": "Logged in", "data": {"user":user}}
 
 
 @router.get("/profile", status_code=status.HTTP_200_OK)

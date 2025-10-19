@@ -1,12 +1,12 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict
 from pydantic import BaseModel, ConfigDict
 from src.models.vacancy import EducationLevel
 
 class ResumeCreateSchema(BaseModel):
     title: Optional[str]
     summary: Optional[str]
-    experience: Optional[dict]
+    experience: Optional[List[Dict]]
     skills: Optional[List[str]]
     education: Optional[EducationLevel]
 
@@ -15,7 +15,7 @@ class ResumeCreateSchema(BaseModel):
 class ResumeUpdateSchema(BaseModel):
     title: Optional[str] = None
     summary: Optional[str] = None
-    experience: Optional[dict] = None
+    experience: Optional[List[Dict]] = None
     skills: Optional[List[str]] = None
     education: Optional[EducationLevel] = None
 

@@ -31,4 +31,4 @@ class User(Base):
     vacancies = relationship("Vacancy", back_populates="hr")
     applications = relationship("VacancyApplication", back_populates="user")
     chats = relationship("Chat", back_populates="user", cascade="all, delete-orphan")
-    resumes = relationship("Resume", back_populates="user", cascade="all, delete-orphan")
+    resume = relationship("Resume", back_populates="user", uselist=False)

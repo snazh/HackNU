@@ -10,14 +10,8 @@ function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
-
-    if (!email || !password) {
-      setError("Пожалуйста, заполните все поля");
-      return;
-    }
-
     setLoading(true);
+    setError("");
 
     try {
       const response = await fetch("http://localhost:8000/api/auth/login", {
@@ -25,25 +19,23 @@ function LoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-          const data = await response.json();
 
-        alert(JSON.stringify(data, null, 2));
-
+      const data = await response.json();
 
 
+      if (data.status === "Success") {
 
-      if (response.ok) {
-        localStorage.setItem("token", data.access_token); // если бекенд FastAPI возвращает access_token
-        const role = data.user.role;
 
-        if (role === "user") navigate("/user");
+        const role =  data.data.user.role;
+
+        if (role === "user" || role === "admin") navigate("/user");
         else if (role === "hr") navigate("/hr");
-        else navigate("/"); // по умолчанию
       } else {
-        setError(data.detail || "Неверный логин или пароль");
+        setError("Неверные данные для входа");
       }
     } catch (err) {
-      setError("Ошибка соединения с сервером");
+      console.error(err);
+      setError("Ошибка при авторизации");
     } finally {
       setLoading(false);
     }
@@ -77,7 +69,7 @@ function LoginPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            sdisabled={loading}
             className={`w-full py-3 rounded-lg text-white font-semibold transition ${
               loading ? "bg-gray-400 cursor-not-allowed" : "bg-gray-800 hover:bg-black"
             }`}

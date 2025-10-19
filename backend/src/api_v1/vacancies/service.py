@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from src.models.vacancy import Vacancy, EducationLevel, VacancyApplication, VacancyStatus
 from sqlalchemy import delete, inspect, select, update
+from sqlalchemy.orm import aliased
 from src.api_v1.auth.schemas import UserPayloadSchema
 from src.api_v1.auth.utils import password_util
 from src.api_v1.common.base_service import BaseService
@@ -18,6 +19,18 @@ from src.models.resume import Resume
 class VacancyService(BaseService[Vacancy, VacancyModelSchema]):
     def __init__(self):
         super().__init__(Vacancy, VacancyModelSchema)
+
+    async def get_all_vacancies(self, user_id: int, session: AsyncSession):
+        va = aliased(VacancyApplication)
+
+        stmt = (
+            select(Vacancy)
+            .outerjoin(va, (va.vacancy_id == Vacancy.id) & (va.user_id == user_id))
+            .where(va.id == None)
+        )
+        result = await session.execute(stmt)
+        vacancies = result.scalars().all()
+        return vacancies
 
     async def create_vacancy(self, vacancy_data: VacancyCreateSchema, session: AsyncSession):
         return await super().create(item_data=vacancy_data, session=session)
@@ -54,10 +67,13 @@ class VacancyApplicationService(BaseService[VacancyApplication, VacancyApplicati
 
     async def apply(self, application_data: VacancyApplicationCreateSchema, session: AsyncSession):
         new_application = await super().create(item_data=application_data, session=session)
-        stmt = select(Resume).where(Resume.user_id == new_application.user_id)
-        result = await session.execute(stmt)
+
+        result = await session.execute(
+            select(Resume).where(Resume.user_id == application_data.user_id)
+        )
         resume = result.scalar_one_or_none()
-        return {"application": new_application, "resume": resume}
+        return resume
+
     async def get_applied_resumes(self, vacancy_id: int, session: AsyncSession):
         stmt = (
             select(Resume)
@@ -68,4 +84,3 @@ class VacancyApplicationService(BaseService[VacancyApplication, VacancyApplicati
         result = await session.execute(stmt)
         resumes = result.scalars().all()
         return resumes
-
