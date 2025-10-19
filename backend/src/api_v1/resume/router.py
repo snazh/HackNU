@@ -9,6 +9,7 @@ from .service import ResumeService
 from src.api_v1.auth.dependencies import get_current_user
 from src.api_v1.auth.schemas import UserPayloadSchema
 from src.models.user import UserRole
+
 router = APIRouter(prefix="/resumes", tags=["Resumes"])
 
 
@@ -39,3 +40,12 @@ async def delete_resume(resume_id: int,
                         service: ResumeService = Depends(get_resume_service),
                         session: AsyncSession = Depends(get_async_session)):
     service.delete(session=session, item_id=resume_id)
+
+
+@router.post("/{resume_id}/analyze", status_code=status.HTTP_200_OK)
+async def analyze_resume(resume_id: int, application_id:int,
+                         user: UserPayloadSchema = Depends(get_current_user),
+                         _: None = require_role(UserRole.admin, UserRole.user, UserRole.hr),
+                         session: AsyncSession = Depends(get_async_session),
+                         service: ResumeService = Depends(get_resume_service)):
+    resume = await service.get_one_by(field="user_id", value=user.user_id, session=session)

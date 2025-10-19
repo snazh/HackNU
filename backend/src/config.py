@@ -41,8 +41,8 @@ class AdminSettings(CoreConfig):
 
 
 
-class ExternalApiSettings(CoreConfig):
-    OPENAI_API_KEY: str
+# class ExternalApiSettings(CoreConfig):
+#     OPENROUTER_API_KEY: str
 
 
 class RedisSetting(CoreConfig):
@@ -55,7 +55,7 @@ class Settings(CoreConfig):
     auth: AuthSettings = AuthSettings()
     admin_data: AdminSettings = AdminSettings()
     redis: RedisSetting = RedisSetting()
-    external_api: ExternalApiSettings = ExternalApiSettings()
+    # external_api: ExternalApiSettings = ExternalApiSettings()
 
 
 settings = Settings()

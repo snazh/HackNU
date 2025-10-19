@@ -9,5 +9,3 @@ from .schemas import ResumeModelSchema, ResumeCreateSchema, ResumeUpdateSchema
 class ResumeService(BaseService[Resume, ResumeModelSchema]):
     def __init__(self):
         super().__init__(Resume, ResumeModelSchema)
-
-

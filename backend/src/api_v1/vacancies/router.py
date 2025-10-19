@@ -13,7 +13,7 @@ from src.models.vacancy import VacancyStatus
 from src.api_v1.vacancies.service import VacancyService, VacancyApplicationService
 from src.api_v1.vacancies.dependencies import get_vacancy_service, get_vacancy_application_service
 from src.api_v1.vacancies.schemas import VacancyCreateSchema, VacancyUpdateSchema, VacancyApplicationCreateSchema
-from .llm_service import analyze_resume
+from .llm_service import analyze_resume, ask_questions
 
 router = APIRouter(prefix="/vacancies", tags=["Vacancies"])
 
@@ -99,6 +99,8 @@ async def apply_to_vacancy(
 
     application_data = VacancyApplicationCreateSchema(user_id=user.user_id, vacancy_id=vacancy_id)
     applicant_resume = await service.apply(application_data=application_data, session=session)
+
+
     decision = analyze_resume(resume=applicant_resume, vacancy=vacancy)
     return {"status": "Success", "msg": "Application sent", "data": decision}
 
