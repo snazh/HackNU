@@ -4,11 +4,11 @@ from src.api_v1.auth.schemas import RegisterSchema, LoginSchema, TokenSchema
 from src.api_v1.common.base_service import BaseService
 from src.api_v1.common.base_types import ModelType
 from src.api_v1.common.errors import ItemAlreadyExistsError
-from src.api_v1.auth.errors import InvalidCredentialsError
+from src.api_v1.auth.errors import InvalidCredentialsError, AccessForbiddenError
 from src.api_v1.auth.utils import password_util, jwt_util
 from src.config import settings
 from src.api_v1.users.schemas import UserModelSchema
-from src.models import User
+from src.models.user import User, UserRole
 
 
 class AuthService(BaseService[User, UserModelSchema]):
@@ -22,6 +22,8 @@ class AuthService(BaseService[User, UserModelSchema]):
         }
 
     async def register(self, session: AsyncSession, user_data: RegisterSchema):
+        if user_data.role == UserRole.admin:
+            raise AccessForbiddenError
         existing_user = await self.get_one_by(session=session, field="email", value=user_data.email)
 
         if existing_user is not None:

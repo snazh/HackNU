@@ -15,7 +15,7 @@ class UserRole(PyEnum):
 
 
 class User(Base):
-    __tablename__ = "user"
+    __tablename__ = "users"
     first_name: Mapped[str] = mapped_column(String(50), nullable=False)
     last_name: Mapped[str] = mapped_column(String(50), nullable=False)
     email: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
@@ -28,12 +28,7 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
-    #
-    # chats = relationship("Chat", back_populates="user", cascade="all, delete-orphan", passive_deletes=True)
-    # rentals = relationship("Rental", back_populates="user", cascade="all, delete-orphan", passive_deletes=True)
-    # products = relationship(
-    #     "Product",
-    #     back_populates="user",
-    #     cascade="all, delete-orphan",
-    #     passive_deletes=True,
-    # )
+    vacancies = relationship("Vacancy", back_populates="hr")
+    applications = relationship("VacancyApplication", back_populates="user")
+    chats = relationship("Chat", back_populates="user", cascade="all, delete-orphan")
+    resumes = relationship("Resume", back_populates="user", cascade="all, delete-orphan")

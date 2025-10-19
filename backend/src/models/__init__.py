@@ -2,4 +2,7 @@
 
 from src.models.user import User
 from src.models.base import Base
-__all__ = ["Base", "User"]
+from src.models.vacancy import Vacancy, VacancyApplication
+from src.models.resume import Resume
+from src.models.chat import Chat,Message
+__all__ = ["Base", "User", "Vacancy", "VacancyApplication", "Chat", "Message", "Resume"]
