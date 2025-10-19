@@ -41,7 +41,7 @@ function LoginPage() {
         else navigate("/"); // по умолчанию
       } else {
         setError(data.detail || "Неверный логин или пароль");
-      }
+      }  
     } catch (err) {
       setError("Ошибка соединения с сервером");
     } finally {
